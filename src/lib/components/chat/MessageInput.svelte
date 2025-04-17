@@ -359,7 +359,7 @@
 
 {#if loaded}
 	<div class="w-full font-primary">
-		<div class=" mx-auto inset-x-0 bg-transparent flex justify-center">
+		<div class="inset-x-0 flex justify-center mx-auto bg-transparent ">
 			<div
 				class="flex flex-col px-3 {($settings?.widescreenMode ?? null)
 					? 'max-w-full'
@@ -368,7 +368,7 @@
 				<div class="relative">
 					{#if autoScroll === false && history?.currentId}
 						<div
-							class=" absolute -top-12 left-0 right-0 flex justify-center z-30 pointer-events-none"
+							class="absolute left-0 right-0 z-30 flex justify-center pointer-events-none -top-12"
 						>
 							<button
 								class=" bg-white border border-gray-100 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto"
@@ -394,7 +394,7 @@
 					{/if}
 				</div>
 
-				<div class="w-full relative">
+				<div class="relative w-full">
 					{#if atSelectedModel !== undefined || selectedToolIds.length > 0 || webSearchEnabled || ($settings?.webSearch ?? false) === 'always' || imageGenerationEnabled || codeInterpreterEnabled}
 						<div
 							class="px-3 pb-0.5 pt-1.5 text-left w-full flex flex-col absolute bottom-0 left-0 right-0 bg-linear-to-t from-white dark:from-gray-900 z-10"
@@ -413,7 +413,7 @@
 													: `${WEBUI_BASE_URL}/static/favicon.png`)}
 										/>
 										<div class="translate-y-[0.5px]">
-											Talking to <span class=" font-medium">{atSelectedModel.name}</span>
+											Talking to <span class="font-medium ">{atSelectedModel.name}</span>
 										</div>
 									</div>
 									<div>
@@ -443,6 +443,10 @@
 
 							if (data?.type === 'model') {
 								atSelectedModel = data.data;
+							}  
+							
+							if (data?.type === 'custom_tag') {
+								prompt += `${data.data.name} `;
 							}
 
 							const chatInputElement = document.getElementById('chat-input');
@@ -510,14 +514,14 @@
 							}}
 						>
 							<div
-								class="flex-1 flex flex-col relative w-full shadow-lg rounded-3xl border border-gray-50 dark:border-gray-850 hover:border-gray-100 focus-within:border-gray-100 hover:dark:border-gray-800 focus-within:dark:border-gray-800 transition px-1 bg-white/90 dark:bg-gray-400/5 dark:text-gray-100"
+								class="relative flex flex-col flex-1 w-full px-1 transition border shadow-lg rounded-3xl border-gray-50 dark:border-gray-850 hover:border-gray-100 focus-within:border-gray-100 hover:dark:border-gray-800 focus-within:dark:border-gray-800 bg-white/90 dark:bg-gray-400/5 dark:text-gray-100"
 								dir={$settings?.chatDirection ?? 'auto'}
 							>
 								{#if files.length > 0}
 									<div class="mx-2 mt-2.5 -mb-1 flex items-center flex-wrap gap-2">
 										{#each files as file, fileIdx}
 											{#if file.type === 'image'}
-												<div class=" relative group">
+												<div class="relative group">
 													<div class="relative flex items-center">
 														<Image
 															src={file.url}
@@ -550,9 +554,9 @@
 															</Tooltip>
 														{/if}
 													</div>
-													<div class=" absolute -top-1 -right-1">
+													<div class="absolute -top-1 -right-1">
 														<button
-															class=" bg-white text-black border border-white rounded-full group-hover:visible invisible transition"
+															class="invisible text-black transition bg-white border border-white rounded-full group-hover:visible"
 															type="button"
 															on:click={() => {
 																files.splice(fileIdx, 1);
@@ -605,7 +609,7 @@
 								<div class="px-2.5">
 									{#if $settings?.richTextInput ?? true}
 										<div
-											class="scrollbar-hidden text-left bg-transparent dark:text-gray-100 outline-hidden w-full pt-3 px-1 resize-none h-fit max-h-80 overflow-auto"
+											class="w-full px-1 pt-3 overflow-auto text-left bg-transparent resize-none scrollbar-hidden dark:text-gray-100 outline-hidden h-fit max-h-80"
 											id="chat-input-container"
 										>
 											<RichTextInput
@@ -824,7 +828,7 @@
 											id="chat-input"
 											dir="auto"
 											bind:this={chatInputElement}
-											class="scrollbar-hidden bg-transparent dark:text-gray-100 outline-hidden w-full pt-3 px-1 resize-none"
+											class="w-full px-1 pt-3 bg-transparent resize-none scrollbar-hidden dark:text-gray-100 outline-hidden"
 											placeholder={placeholder ? placeholder : $i18n.t('Send a Message')}
 											bind:value={prompt}
 											on:compositionstart={() => (isComposing = true)}
@@ -1103,7 +1107,7 @@
 											</button>
 										</InputMenu>
 
-										<div class="flex gap-1 items-center overflow-x-auto scrollbar-none flex-1">
+										<div class="flex items-center flex-1 gap-1 overflow-x-auto scrollbar-none">
 											{#if toolServers.length + selectedToolIds.length > 0}
 												<Tooltip
 													content={$i18n.t('{{COUNT}} Available Tools', {
@@ -1188,7 +1192,7 @@
 										</div>
 									</div>
 
-									<div class="self-end flex space-x-1 mr-1 shrink-0">
+									<div class="flex self-end mr-1 space-x-1 shrink-0">
 										{#if (!history?.currentId || history.messages[history.currentId]?.done == true) && ($_user?.role === 'admin' || ($_user?.permissions?.chat?.stt ?? true))}
 											<Tooltip content={$i18n.t('Record voice')}>
 												<button
@@ -1239,7 +1243,7 @@
 										{/if}
 
 										{#if (taskIds && taskIds.length > 0) || (history.currentId && history.messages[history.currentId]?.done != true)}
-											<div class=" flex items-center">
+											<div class="flex items-center ">
 												<Tooltip content={$i18n.t('Stop')}>
 													<button
 														class="bg-white hover:bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 transition rounded-full p-1.5"
@@ -1263,7 +1267,7 @@
 												</Tooltip>
 											</div>
 										{:else if prompt === '' && files.length === 0 && ($_user?.role === 'admin' || ($_user?.permissions?.chat?.call ?? true))}
-											<div class=" flex items-center">
+											<div class="flex items-center ">
 												<Tooltip content={$i18n.t('Call')}>
 													<button
 														class=" bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100 transition rounded-full p-1.5 self-center"
@@ -1325,7 +1329,7 @@
 												</Tooltip>
 											</div>
 										{:else}
-											<div class=" flex items-center">
+											<div class="flex items-center ">
 												<Tooltip content={$i18n.t('Send message')}>
 													<button
 														id="send-message-button"

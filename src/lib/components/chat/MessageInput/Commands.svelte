@@ -14,6 +14,7 @@
 	import Knowledge from './Commands/Knowledge.svelte';
 	import Models from './Commands/Models.svelte';
 	import Spinner from '$lib/components/common/Spinner.svelte';
+	import CustomTags from './Commands/CustomTags.svelte';
 
 	export let prompt = '';
 	export let files = [];
@@ -33,7 +34,7 @@
 	$: command = prompt?.split('\n').pop()?.split(' ')?.pop() ?? '';
 
 	let show = false;
-	$: show = ['/', '#', '@'].includes(command?.charAt(0)) || '\\#' === command.slice(0, 2);
+	$: show = ['/', '#', '@', '$'].includes(command?.charAt(0)) || '\\#' === command.slice(0, 2);
 
 	$: if (show) {
 		init();
@@ -106,15 +107,27 @@
 					});
 				}}
 			/>
+			{:else if command?.charAt(0) === '$'}
+			<CustomTags
+				bind:this={commandElement}
+				{command}
+				on:select={(e) => {
+					prompt = removeLastWordFromString(prompt, command);
+					dispatch('select', {
+						type: 'custom_tag',
+						data: e.detail
+					});
+				}}
+			/>
 		{/if}
 	{:else}
 		<div
 			id="commands-container"
-			class="px-2 mb-2 text-left w-full absolute bottom-0 left-0 right-0 z-10"
+			class="absolute bottom-0 left-0 right-0 z-10 w-full px-2 mb-2 text-left"
 		>
-			<div class="flex w-full rounded-xl border border-gray-100 dark:border-gray-850">
+			<div class="flex w-full border border-gray-100 rounded-xl dark:border-gray-850">
 				<div
-					class="max-h-60 flex flex-col w-full rounded-xl bg-white dark:bg-gray-900 dark:text-gray-100"
+					class="flex flex-col w-full bg-white max-h-60 rounded-xl dark:bg-gray-900 dark:text-gray-100"
 				>
 					<Spinner />
 				</div>
